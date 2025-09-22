@@ -23,4 +23,8 @@ urlpatterns = [
     #path("admin/", admin.site.urls),
     path("", views.index, name="index"),
     path("about/", views.about, name="about"),
+
+    path("search/<str:keyword>/<int:page>/", views.search, name="search"),
+
+    path("date/<int:year>-<int:month>-<int:day>/", views.date, name="current_datetime"),
 ]

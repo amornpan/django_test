@@ -54,7 +54,7 @@ python .\manage.py runserver
 ### หน้าเว็บที่สามารถเข้าถึงได้
 
 - **หน้าหลัก**: `http://127.0.0.1:8000/` - แสดงหน้า HTML template พร้อม navigation
-- **หน้าทดสอบ**: `http://127.0.0.1:8000/test/` - แสดงหน้า test template แบบเรียบง่าย
+- **หน้าทดสอบ**: `http://127.0.0.1:8000/test/` - แสดงหน้าทดสอบ Django template features (variables, loops, dynamic data)
 - **หน้าเกี่ยวกับ**: `http://127.0.0.1:8000/about/` - แสดงหน้า About template พร้อมข้อมูลโปรเจค
 - **หน้าค้นหา**: `http://127.0.0.1:8000/search/{keyword}/{page}/` - เช่น `/search/python/1/`
 - **หน้าวันที่**: `http://127.0.0.1:8000/date/{year}-{month}-{day}/` - เช่น `/date/2024-12-25/`
@@ -71,7 +71,7 @@ django_test/
 ├── db.sqlite3          # SQLite database
 ├── templates/          # Django templates directory
 │   ├── index.html      # HTML template สำหรับหน้าหลัก
-│   ├── test.html       # HTML template แบบเรียบง่ายสำหรับทดสอบ
+│   ├── test.html       # HTML template สำหรับทดสอบ Django features
 │   └── about.html      # HTML template สำหรับหน้าเกี่ยวกับ
 ├── django_test/        # โฟลเดอร์หลักของโปรเจค
 │   ├── __init__.py
@@ -97,12 +97,15 @@ django_test/
    - Template: `templates/index.html` พร้อม CSS styling
    - มี navigation links ไปยัง views อื่นๆ
 
-2. **Test View** (`/test/`) - ใช้ Django Template แบบเรียบง่าย
+2. **Test View** (`/test/`) - ใช้ Django Template พร้อม Dynamic Data
    - Function: `test(request)`
    - ใช้ `render()` พร้อม context variables
-   - Template: `templates/test.html` แบบ minimal HTML
-   - แสดง `title` และ `content` โดยใช้ template variables
-   - เหมาะสำหรับการทดสอบ Django template system
+   - Template: `templates/test.html` พร้อม CSS styling
+   - แสดง dynamic data: วันที่ปัจจุบัน, lists ของสีและดอกไม้
+   - ใช้ Django template tags: `{% for %}` loops
+   - แสดง template variables: `{{ title }}`, `{{ content }}`, `{{ date }}`
+   - เหมาะสำหรับการเรียนรู้ Django template system และ context data
+   - แสดง import handling: `from datetime import date as today_date`
 
 3. **About View** (`/about/`) - ใช้ Django Template
    - Function: `about(request)`
@@ -119,6 +122,7 @@ django_test/
    - Function: `date(request, year, month, day)`
    - แสดงวันที่ในรูปแบบที่กำหนด
    - ตัวอย่าง: `/date/2024-12-25/`
+   - **หมายเหตุ**: function ชื่อ `date` ทำให้เกิด conflict กับ `from datetime import date`
 
 6. **Year Archive View** (`/articles/<year>/`) - ใช้ Regex
    - Function: `year_archive(request, year)`
@@ -145,19 +149,34 @@ django_test/
 
 ### Template Features ในโปรเจค
 - `index.html` - หน้าหลักพร้อม HTML/CSS styling และ navigation menu
-- `test.html` - หน้าทดสอบแบบเรียบง่าย (minimal HTML) สำหรับเรียนรู้ template variables
+- `test.html` - หน้าทดสอบ Django template features:
+  - Template variables: `{{ title }}`, `{{ content }}`, `{{ date }}`
+  - Template tags: `{% for %}` loops สำหรับ lists
+  - Dynamic data: วันที่ปัจจุบัน, arrays ของสีและดอกไม้
+  - CSS styling พร้อม responsive design
 - `about.html` - หน้าข้อมูลโปรเจคพร้อมรายละเอียดฟีเจอร์
-- Context variables: `{{ title }}` และ `{{ content }}`
+- Context variables และ template inheritance concepts
 - แสดงความแตกต่างของ template design ตั้งแต่แบบง่ายจนถึงซับซ้อน
 - Responsive design พร้อม CSS styling (ในบาง templates)
 - Demo links สำหรับทดสอบ URL patterns ต่างๆ
 
 ### Template Comparison
-| Template | Style | Purpose |
-|----------|-------|---------|
-| `test.html` | Minimal HTML | การทดสอบ template variables |
-| `index.html` | Full CSS + Navigation | หน้าหลักที่สมบูรณ์ |
-| `about.html` | Full CSS + Content | หน้าข้อมูลโปรเจค |
+| Template | Style | Features | Purpose |
+|----------|-------|----------|---------|
+| `test.html` | CSS + Dynamic Data | Template variables, for loops, date display | Django template features demonstration |
+| `index.html` | Full CSS + Navigation | Context vars, navigation menu, links | Complete homepage |
+| `about.html` | Full CSS + Content | Static content, project info, features | Project information page |
+
+## Common Issues และการแก้ไข
+
+### 1. Name Conflict Issue
+**ปัญหา**: `AttributeError: 'function' object has no attribute 'today'`
+**สาเหตุ**: function `date()` ในไฟล์เดียวกันกับ `from datetime import date`
+**วิธีแก้ไข**: ใช้ alias `from datetime import date as today_date`
+
+### 2. render() Function Syntax
+**ปัญหา**: `render()` รับ arguments ผิดรูปแบบ
+**วิธีแก้ไข**: ใช้ `render(request, template_name, context)` (3 parameters เท่านั้น)
 
 ## คำสั่งที่มีประโยชน์
 
@@ -187,7 +206,7 @@ python manage.py collectstatic
 3. เข้าถึงเว็บไซต์ที่ `http://127.0.0.1:8000/`
 4. ทดสอบ URL patterns ต่างๆ ตามที่ระบุในส่วน Features
 5. แก้ไข templates ใน `templates/` directory
-6. เปรียบเทียบ template designs ตั้งแต่ minimal จนถึง full-featured
+6. เปรียบเทียบ template designs และ features ต่างๆ
 
 ## การจัดการ Git
 
@@ -216,7 +235,7 @@ git push origin master
 # ทดสอบหน้าหลัก (จะเห็น HTML template พร้อม styling)
 curl http://127.0.0.1:8000/
 
-# ทดสอบหน้าทดสอบ (จะเห็น minimal HTML)
+# ทดสอบหน้าทดสอบ (จะเห็น dynamic data และ template features)
 curl http://127.0.0.1:8000/test/
 
 # ทดสอบหน้าเกี่ยวกับ (จะเห็น detailed HTML)
@@ -275,8 +294,9 @@ curl "http://127.0.0.1:8000/map/?type=terrain&zoom=12"
 - ใช้ `render()` function เพื่อส่ง context data ไปยัง template
 - Template files อยู่ใน `templates/` directory
 - สามารถใช้ template variables เช่น `{{ variable_name }}`
+- รองรับ template tags เช่น `{% for %}`
 - รองรับ HTML, CSS, และ JavaScript
-- แสดงตัวอย่างตั้งแต่ minimal design จนถึง full-featured design
+- แสดงตัวอย่างตั้งแต่ basic จนถึง advanced features
 
 ## หมายเหตุ
 
@@ -290,10 +310,11 @@ curl "http://127.0.0.1:8000/map/?type=terrain&zoom=12"
   - Query parameters (GET parameters)
   - Django Templates (HTML rendering)
 - แสดงความแตกต่างของ template designs:
-  - `test.html` - แบบเรียบง่าย เหมาะสำหรับการเรียนรู้
+  - `test.html` - แสดง Django template features (variables, loops, dynamic data)
   - `index.html` - แบบสมบูรณ์ พร้อม navigation และ styling
   - `about.html` - แบบ content-rich พร้อมข้อมูลครบถ้วน
 - views.py ใช้ทั้ง `HttpResponse` และ `render()` เพื่อแสดงความแตกต่าง
+- แสดงการแก้ไข common issues เช่น name conflicts และ syntax errors
 - ตรวจสอบให้แน่ใจว่าได้เปิดใช้งาน conda environment ก่อนรันคำสั่งต่างๆ
 - สำหรับ production ควรมีการตั้งค่าเพิ่มเติมด้านความปลอดภัยและประสิทธิภาพ
 - SECRET_KEY ในไฟล์ settings.py เป็นแบบ development ไม่ควรใช้ใน production

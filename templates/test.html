@@ -4,8 +4,89 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title}}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .list-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0f8ff;
+            border-left: 4px solid #4CAF50;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #e8f5e8;
+            margin: 5px 0;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+        .date-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        h1, h3 {
+            color: #333;
+        }
+        .nav-button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 5px;
+        }
+        .nav-button:hover {
+            background: #45a049;
+        }
+    </style>
 </head>
 <body>
-    <h3>{{content}}</h3>
+    <div class="container">
+        <h1>{{title}}</h1>
+        <h3>{{content}}</h3>
+        
+        <div class="date-info">
+            <strong>Today's Date:</strong> {{date}}
+        </div>
+        
+        <div class="list-section">
+            <h3>Available Colors:</h3>
+            <ul>
+                {% for color in colors %}
+                <li>{{ color }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div class="list-section">
+            <h3>Beautiful Flowers:</h3>
+            <ul>
+                {% for flower in flowers %}
+                <li>{{ flower }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="/" class="nav-button">Back to Home</a>
+            <a href="/about/" class="nav-button">About</a>
+        </div>
+    </div>
 </body>
 </html>

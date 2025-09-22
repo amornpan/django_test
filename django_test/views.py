@@ -1,12 +1,18 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+from datetime import date as today_date  # เปลี่ยนชื่อเพื่อหลีกเลี่ยง conflict
 
 def test(request):
-    vars = {
-    "title": "Welcome to My Django Site",
-    "content": "This is the home page of my awesome Django test project. Explore the different URL patterns and see how Django routing works!",
-}
-    return render(request, "test.html", vars)
+    dt = today_date.today()
+
+    context = {
+        'title': "Welcome to My Django Site",
+        'content': "This is the home page of my awesome Django test project. Explore the different URL patterns and see how Django routing works!",
+        'colors': ['Red', 'Green', 'Blue', 'Yellow'],
+        'flowers': ['Rose', 'Tulip', 'Daffodil', 'Sunflower'],
+        'date': dt,
+    }
+    return render(request, "test.html", context)
 
 def index(request):
     context = {
@@ -41,4 +47,3 @@ def maps(request):
     zoom = request.GET.get("zoom", "11") 
     query = request.GET.get("q", "")
     return HttpResponse(f"Map type: {type}, Latitude: {lat}, Longitude: {lon}, Zoom: {zoom}, Query: {query}")
-

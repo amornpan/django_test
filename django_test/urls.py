@@ -18,13 +18,21 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 import django_test.views as views
+from django.urls import re_path
 
 urlpatterns = [
     #path("admin/", admin.site.urls),
     path("", views.index, name="index"),
     path("about/", views.about, name="about"),
 
+
+# parametoers in URL    
     path("search/<str:keyword>/<int:page>/", views.search, name="search"),
 
     path("date/<int:year>-<int:month>-<int:day>/", views.date, name="current_datetime"),
+
+# Regex paths
+    re_path(r"^articles/(?P<year>[0-9]{4})/$", views.year_archive, name="year_archive"),
+
+    re_path(r"^articles/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/$", views.month_archive, name="month_archive"),
 ]

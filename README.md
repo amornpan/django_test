@@ -1,6 +1,6 @@
 # Django Test Project
 
-โปรเจค Django สำหรับการทดสอบและพัฒนา พร้อมด้วย Views และ URL routing เบื้องต้น
+โปรเจค Django สำหรับการทดสอบและพัฒนา พร้อมด้วย Views, URL routing, และ Regex URL patterns
 
 ## ข้อกำหนดของระบบ
 
@@ -57,6 +57,8 @@ python .\manage.py runserver
 - **หน้าเกี่ยวกับ**: `http://127.0.0.1:8000/about/` - แสดง "This is the about page."
 - **หน้าค้นหา**: `http://127.0.0.1:8000/search/{keyword}/{page}/` - เช่น `/search/python/1/`
 - **หน้าวันที่**: `http://127.0.0.1:8000/date/{year}-{month}-{day}/` - เช่น `/date/2024-12-25/`
+- **หน้าบทความรายปี**: `http://127.0.0.1:8000/articles/{year}/` - เช่น `/articles/2024/`
+- **หน้าบทความรายเดือน**: `http://127.0.0.1:8000/articles/{year}/{month}/` - เช่น `/articles/2024/12/`
 
 ## โครงสร้างโปรเจค
 
@@ -68,7 +70,7 @@ django_test/
 ├── django_test/        # โฟลเดอร์หลักของโปรเจค
 │   ├── __init__.py
 │   ├── settings.py     # การตั้งค่าโปรเจค
-│   ├── urls.py         # URL routing กับ path patterns
+│   ├── urls.py         # URL routing กับ path patterns และ regex
 │   ├── views.py        # Views functions (เพิ่มใหม่)
 │   ├── wsgi.py         # WSGI configuration
 │   ├── asgi.py         # ASGI configuration
@@ -79,6 +81,8 @@ django_test/
 ## Features ที่มีอยู่
 
 ### Views และ URL Patterns
+
+โปรเจคนี้แสดงให้เห็นการใช้งาน URL patterns ทั้งแบบปกติและแบบ Regex:
 
 1. **Index View** (`/`)
    - Function: `index(request)`
@@ -97,6 +101,16 @@ django_test/
    - Function: `date(request, year, month, day)`
    - แสดงวันที่ในรูปแบบที่กำหนด
    - ตัวอย่าง: `/date/2024-12-25/`
+
+5. **Year Archive View** (`/articles/<year>/`) - ใช้ Regex
+   - Function: `year_archive(request, year)`
+   - แสดงบทความประจำปี (4 หลัก)
+   - ตัวอย่าง: `/articles/2024/`
+
+6. **Month Archive View** (`/articles/<year>/<month>/`) - ใช้ Regex
+   - Function: `month_archive(request, year, month)`
+   - แสดงบทความประจำเดือน (2 หลัก)
+   - ตัวอย่าง: `/articles/2024/12/`
 
 ## คำสั่งที่มีประโยชน์
 
@@ -148,6 +162,7 @@ git push origin master
 
 สามารถทดสอบ views ต่างๆ ได้ดังนี้:
 
+### URL Patterns ปกติ
 ```bash
 # ทดสอบหน้าหลัก
 curl http://127.0.0.1:8000/
@@ -155,12 +170,32 @@ curl http://127.0.0.1:8000/
 # ทดสอบหน้าเกี่ยวกับ
 curl http://127.0.0.1:8000/about/
 
-# ทดสอบการค้นหา
+# ทดสอบการค้นหา (พารามิเตอร์ใน URL)
 curl http://127.0.0.1:8000/search/django/1/
 
 # ทดสอบหน้าวันที่
 curl http://127.0.0.1:8000/date/2024-12-25/
 ```
+
+### Regex URL Patterns
+```bash
+# ทดสอบบทความรายปี (ต้องเป็น 4 หลัก)
+curl http://127.0.0.1:8000/articles/2024/
+
+# ทดสอบบทความรายเดือน (ปี 4 หลัก, เดือน 2 หลัก)
+curl http://127.0.0.1:8000/articles/2024/12/
+```
+
+## URL Patterns ที่ใช้ในโปรเจค
+
+### แบบปกติ (path)
+- ใช้สำหรับ URL patterns ธรรมดา
+- รองรับ type converters เช่น `<str:keyword>`, `<int:page>`
+
+### แบบ Regex (re_path)
+- ใช้ regular expressions สำหรับ pattern ที่ซับซ้อน
+- `(?P<year>[0-9]{4})` - capture group ชื่อ year ที่ต้องเป็นตัวเลข 4 หลัก
+- `(?P<month>[0-9]{2})` - capture group ชื่อ month ที่ต้องเป็นตัวเลข 2 หลัก
 
 ## หมายเหตุ
 
@@ -168,6 +203,8 @@ curl http://127.0.0.1:8000/date/2024-12-25/
 - Django version 5.2.6 กับ Python 3.10
 - ฐานข้อมูล SQLite3 (db.sqlite3) ถูกสร้างแล้ว
 - Admin interface ถูก comment ออกในไฟล์ urls.py
+- แสดงการใช้งาน URL patterns ทั้งแบบปกติและ Regex
+- views.py มีคอมเมนต์อธิบายแต่ละประเภทของ URL patterns
 - ตรวจสอบให้แน่ใจว่าได้เปิดใช้งาน conda environment ก่อนรันคำสั่งต่างๆ
 - สำหรับ production ควรมีการตั้งค่าเพิ่มเติมด้านความปลอดภัยและประสิทธิภาพ
 - SECRET_KEY ในไฟล์ settings.py เป็นแบบ development ไม่ควรใช้ใน production

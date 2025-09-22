@@ -21,6 +21,9 @@ import django_test.views as views
 from django.urls import re_path
 
 urlpatterns = [
+
+    path("test/", views.test, name="test"),
+
     #path("admin/", admin.site.urls),
     path("", views.index, name="index"),
     

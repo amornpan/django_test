@@ -54,6 +54,7 @@ python .\manage.py runserver
 ### หน้าเว็บที่สามารถเข้าถึงได้
 
 - **หน้าหลัก**: `http://127.0.0.1:8000/` - แสดงหน้า HTML template พร้อม navigation
+- **หน้าทดสอบ**: `http://127.0.0.1:8000/test/` - แสดงหน้า test template แบบเรียบง่าย
 - **หน้าเกี่ยวกับ**: `http://127.0.0.1:8000/about/` - แสดงหน้า About template พร้อมข้อมูลโปรเจค
 - **หน้าค้นหา**: `http://127.0.0.1:8000/search/{keyword}/{page}/` - เช่น `/search/python/1/`
 - **หน้าวันที่**: `http://127.0.0.1:8000/date/{year}-{month}-{day}/` - เช่น `/date/2024-12-25/`
@@ -70,6 +71,7 @@ django_test/
 ├── db.sqlite3          # SQLite database
 ├── templates/          # Django templates directory
 │   ├── index.html      # HTML template สำหรับหน้าหลัก
+│   ├── test.html       # HTML template แบบเรียบง่ายสำหรับทดสอบ
 │   └── about.html      # HTML template สำหรับหน้าเกี่ยวกับ
 ├── django_test/        # โฟลเดอร์หลักของโปรเจค
 │   ├── __init__.py
@@ -95,33 +97,40 @@ django_test/
    - Template: `templates/index.html` พร้อม CSS styling
    - มี navigation links ไปยัง views อื่นๆ
 
-2. **About View** (`/about/`) - ใช้ Django Template
+2. **Test View** (`/test/`) - ใช้ Django Template แบบเรียบง่าย
+   - Function: `test(request)`
+   - ใช้ `render()` พร้อม context variables
+   - Template: `templates/test.html` แบบ minimal HTML
+   - แสดง `title` และ `content` โดยใช้ template variables
+   - เหมาะสำหรับการทดสอบ Django template system
+
+3. **About View** (`/about/`) - ใช้ Django Template
    - Function: `about(request)`
    - ใช้ `render()` แสดงหน้าข้อมูลโปรเจค
    - Template: `templates/about.html` พร้อม CSS styling
    - แสดงข้อมูลเทคโนโลยีและฟีเจอร์ต่างๆ
 
-3. **Search View** (`/search/<keyword>/<page>/`)
+4. **Search View** (`/search/<keyword>/<page>/`)
    - Function: `search(request, keyword, page)`
    - รับพารามิเตอร์ keyword และ page number
    - ตัวอย่าง: `/search/python/1/`
 
-4. **Date View** (`/date/<year>-<month>-<day>/`)
+5. **Date View** (`/date/<year>-<month>-<day>/`)
    - Function: `date(request, year, month, day)`
    - แสดงวันที่ในรูปแบบที่กำหนด
    - ตัวอย่าง: `/date/2024-12-25/`
 
-5. **Year Archive View** (`/articles/<year>/`) - ใช้ Regex
+6. **Year Archive View** (`/articles/<year>/`) - ใช้ Regex
    - Function: `year_archive(request, year)`
    - แสดงบทความประจำปี (4 หลัก)
    - ตัวอย่าง: `/articles/2024/`
 
-6. **Month Archive View** (`/articles/<year>/<month>/`) - ใช้ Regex
+7. **Month Archive View** (`/articles/<year>/<month>/`) - ใช้ Regex
    - Function: `month_archive(request, year, month)`
    - แสดงบทความประจำเดือน (2 หลัก)
    - ตัวอย่าง: `/articles/2024/12/`
 
-7. **Maps View** (`/map/`) - ใช้ Query Parameters
+8. **Maps View** (`/map/`) - ใช้ Query Parameters
    - Function: `maps(request)`
    - รับ query parameters: `type`, `lat`, `lon`, `zoom`, `q`
    - ตัวอย่าง: `/map/?type=satellite&lat=13.7563&lon=100.5018&zoom=15&q=Bangkok`
@@ -135,12 +144,20 @@ django_test/
 - ใช้ `Path.joinpath(BASE_DIR, "templates")` เพื่อระบุ path
 
 ### Template Features ในโปรเจค
-- `index.html` - หน้าหลักพร้อม HTML/CSS styling
+- `index.html` - หน้าหลักพร้อม HTML/CSS styling และ navigation menu
+- `test.html` - หน้าทดสอบแบบเรียบง่าย (minimal HTML) สำหรับเรียนรู้ template variables
 - `about.html` - หน้าข้อมูลโปรเจคพร้อมรายละเอียดฟีเจอร์
 - Context variables: `{{ title }}` และ `{{ content }}`
-- Navigation menu ที่เชื่อมโยงไปยัง views อื่นๆ
-- Responsive design พร้อม CSS styling
+- แสดงความแตกต่างของ template design ตั้งแต่แบบง่ายจนถึงซับซ้อน
+- Responsive design พร้อม CSS styling (ในบาง templates)
 - Demo links สำหรับทดสอบ URL patterns ต่างๆ
+
+### Template Comparison
+| Template | Style | Purpose |
+|----------|-------|---------|
+| `test.html` | Minimal HTML | การทดสอบ template variables |
+| `index.html` | Full CSS + Navigation | หน้าหลักที่สมบูรณ์ |
+| `about.html` | Full CSS + Content | หน้าข้อมูลโปรเจค |
 
 ## คำสั่งที่มีประโยชน์
 
@@ -170,6 +187,7 @@ python manage.py collectstatic
 3. เข้าถึงเว็บไซต์ที่ `http://127.0.0.1:8000/`
 4. ทดสอบ URL patterns ต่างๆ ตามที่ระบุในส่วน Features
 5. แก้ไข templates ใน `templates/` directory
+6. เปรียบเทียบ template designs ตั้งแต่ minimal จนถึง full-featured
 
 ## การจัดการ Git
 
@@ -193,14 +211,20 @@ git push origin master
 
 สามารถทดสอบ views ต่างๆ ได้ดังนี้:
 
-### URL Patterns ปกติ
+### Template-based Views
 ```bash
-# ทดสอบหน้าหลัก (จะเห็น HTML template)
+# ทดสอบหน้าหลัก (จะเห็น HTML template พร้อม styling)
 curl http://127.0.0.1:8000/
 
-# ทดสอบหน้าเกี่ยวกับ
-curl http://127.0.0.1:8000/about/
+# ทดสอบหน้าทดสอบ (จะเห็น minimal HTML)
+curl http://127.0.0.1:8000/test/
 
+# ทดสอบหน้าเกี่ยวกับ (จะเห็น detailed HTML)
+curl http://127.0.0.1:8000/about/
+```
+
+### URL Patterns ปกติ
+```bash
 # ทดสอบการค้นหา (พารามิเตอร์ใน URL)
 curl http://127.0.0.1:8000/search/django/1/
 
@@ -234,6 +258,7 @@ curl "http://127.0.0.1:8000/map/?type=terrain&zoom=12"
 ### แบบปกติ (path)
 - ใช้สำหรับ URL patterns ธรรมดา
 - รองรับ type converters เช่น `<str:keyword>`, `<int:page>`
+- ตัวอย่าง: `path("test/", views.test, name="test")`
 
 ### แบบ Regex (re_path)
 - ใช้ regular expressions สำหรับ pattern ที่ซับซ้อน
@@ -251,6 +276,7 @@ curl "http://127.0.0.1:8000/map/?type=terrain&zoom=12"
 - Template files อยู่ใน `templates/` directory
 - สามารถใช้ template variables เช่น `{{ variable_name }}`
 - รองรับ HTML, CSS, และ JavaScript
+- แสดงตัวอย่างตั้งแต่ minimal design จนถึง full-featured design
 
 ## หมายเหตุ
 
@@ -263,8 +289,11 @@ curl "http://127.0.0.1:8000/map/?type=terrain&zoom=12"
   - Regex patterns (ซับซ้อน)
   - Query parameters (GET parameters)
   - Django Templates (HTML rendering)
+- แสดงความแตกต่างของ template designs:
+  - `test.html` - แบบเรียบง่าย เหมาะสำหรับการเรียนรู้
+  - `index.html` - แบบสมบูรณ์ พร้อม navigation และ styling
+  - `about.html` - แบบ content-rich พร้อมข้อมูลครบถ้วน
 - views.py ใช้ทั้ง `HttpResponse` และ `render()` เพื่อแสดงความแตกต่าง
-- หน้าหลักใช้ Django template พร้อม navigation menu
 - ตรวจสอบให้แน่ใจว่าได้เปิดใช้งาน conda environment ก่อนรันคำสั่งต่างๆ
 - สำหรับ production ควรมีการตั้งค่าเพิ่มเติมด้านความปลอดภัยและประสิทธิภาพ
 - SECRET_KEY ในไฟล์ settings.py เป็นแบบ development ไม่ควรใช้ใน production

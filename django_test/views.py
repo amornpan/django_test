@@ -1,6 +1,13 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 
+def test(request):
+    vars = {
+    "title": "Welcome to My Django Site",
+    "content": "This is the home page of my awesome Django test project. Explore the different URL patterns and see how Django routing works!",
+}
+    return render(request, "test.html", vars)
+
 def index(request):
     context = {
         "title": "Welcome to My Django Site",

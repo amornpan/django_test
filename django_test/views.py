@@ -9,10 +9,11 @@ def index(request):
     return render(request, "index.html", context)
 
 def about(request):
-    return HttpResponse("This is the about page.")  
+    # return HttpResponse("This is the about page.")  
+    return render(request, "about.html")
 
 
-# parametoers in URL 
+# Parameters in URL 
 def search(request, keyword, page):
     return HttpResponse(f"Search results for '{keyword}' on page {page}.")  
 

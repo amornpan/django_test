@@ -54,7 +54,7 @@ python .\manage.py runserver
 ### หน้าเว็บที่สามารถเข้าถึงได้
 
 - **หน้าหลัก**: `http://127.0.0.1:8000/` - แสดงหน้า HTML template พร้อม navigation
-- **หน้าเกี่ยวกับ**: `http://127.0.0.1:8000/about/` - แสดง "This is the about page."
+- **หน้าเกี่ยวกับ**: `http://127.0.0.1:8000/about/` - แสดงหน้า About template พร้อมข้อมูลโปรเจค
 - **หน้าค้นหา**: `http://127.0.0.1:8000/search/{keyword}/{page}/` - เช่น `/search/python/1/`
 - **หน้าวันที่**: `http://127.0.0.1:8000/date/{year}-{month}-{day}/` - เช่น `/date/2024-12-25/`
 - **หน้าบทความรายปี**: `http://127.0.0.1:8000/articles/{year}/` - เช่น `/articles/2024/`
@@ -69,7 +69,8 @@ django_test/
 ├── manage.py           # ไฟล์สำหรับจัดการโปรเจค Django
 ├── db.sqlite3          # SQLite database
 ├── templates/          # Django templates directory
-│   └── index.html      # HTML template สำหรับหน้าหลัก
+│   ├── index.html      # HTML template สำหรับหน้าหลัก
+│   └── about.html      # HTML template สำหรับหน้าเกี่ยวกับ
 ├── django_test/        # โฟลเดอร์หลักของโปรเจค
 │   ├── __init__.py
 │   ├── settings.py     # การตั้งค่าโปรเจค (มี TEMPLATES config)
@@ -94,9 +95,11 @@ django_test/
    - Template: `templates/index.html` พร้อม CSS styling
    - มี navigation links ไปยัง views อื่นๆ
 
-2. **About View** (`/about/`)
+2. **About View** (`/about/`) - ใช้ Django Template
    - Function: `about(request)`
-   - แสดงข้อมูลเกี่ยวกับหน้าเว็บ
+   - ใช้ `render()` แสดงหน้าข้อมูลโปรเจค
+   - Template: `templates/about.html` พร้อม CSS styling
+   - แสดงข้อมูลเทคโนโลยีและฟีเจอร์ต่างๆ
 
 3. **Search View** (`/search/<keyword>/<page>/`)
    - Function: `search(request, keyword, page)`
@@ -133,6 +136,7 @@ django_test/
 
 ### Template Features ในโปรเจค
 - `index.html` - หน้าหลักพร้อม HTML/CSS styling
+- `about.html` - หน้าข้อมูลโปรเจคพร้อมรายละเอียดฟีเจอร์
 - Context variables: `{{ title }}` และ `{{ content }}`
 - Navigation menu ที่เชื่อมโยงไปยัง views อื่นๆ
 - Responsive design พร้อม CSS styling

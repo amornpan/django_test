@@ -1,6 +1,6 @@
 # Django Test Project
 
-โปรเจค Django สำหรับการทดสอบและพัฒนา พร้อมด้วย Views, URL routing, และ Regex URL patterns
+โปรเจค Django สำหรับการทดสอบและพัฒนา พร้อมด้วย Views, URL routing, Regex URL patterns, Query Parameters และ Django Templates
 
 ## ข้อกำหนดของระบบ
 
@@ -53,12 +53,13 @@ python .\manage.py runserver
 
 ### หน้าเว็บที่สามารถเข้าถึงได้
 
-- **หน้าหลัก**: `http://127.0.0.1:8000/` - แสดง "Hello, world. You're at the index."
+- **หน้าหลัก**: `http://127.0.0.1:8000/` - แสดงหน้า HTML template พร้อม navigation
 - **หน้าเกี่ยวกับ**: `http://127.0.0.1:8000/about/` - แสดง "This is the about page."
 - **หน้าค้นหา**: `http://127.0.0.1:8000/search/{keyword}/{page}/` - เช่น `/search/python/1/`
 - **หน้าวันที่**: `http://127.0.0.1:8000/date/{year}-{month}-{day}/` - เช่น `/date/2024-12-25/`
 - **หน้าบทความรายปี**: `http://127.0.0.1:8000/articles/{year}/` - เช่น `/articles/2024/`
 - **หน้าบทความรายเดือน**: `http://127.0.0.1:8000/articles/{year}/{month}/` - เช่น `/articles/2024/12/`
+- **หน้าแผนที่**: `http://127.0.0.1:8000/map/` - รองรับ query parameters เช่น `?type=satellite&lat=13.7563&lon=100.5018&zoom=15&q=Bangkok`
 
 ## โครงสร้างโปรเจค
 
@@ -67,11 +68,13 @@ django_test/
 ├── .git/               # Git repository
 ├── manage.py           # ไฟล์สำหรับจัดการโปรเจค Django
 ├── db.sqlite3          # SQLite database
+├── templates/          # Django templates directory
+│   └── index.html      # HTML template สำหรับหน้าหลัก
 ├── django_test/        # โฟลเดอร์หลักของโปรเจค
 │   ├── __init__.py
-│   ├── settings.py     # การตั้งค่าโปรเจค
+│   ├── settings.py     # การตั้งค่าโปรเจค (มี TEMPLATES config)
 │   ├── urls.py         # URL routing กับ path patterns และ regex
-│   ├── views.py        # Views functions (เพิ่มใหม่)
+│   ├── views.py        # Views functions (ใช้ทั้ง HttpResponse และ render)
 │   ├── wsgi.py         # WSGI configuration
 │   ├── asgi.py         # ASGI configuration
 │   └── __pycache__/    # Python cache files
@@ -82,11 +85,14 @@ django_test/
 
 ### Views และ URL Patterns
 
-โปรเจคนี้แสดงให้เห็นการใช้งาน URL patterns ทั้งแบบปกติและแบบ Regex:
+โปรเจคนี้แสดงให้เห็นการใช้งาน URL patterns ทั้งแบบปกติ, แบบ Regex, Query Parameters, และ Django Templates:
 
-1. **Index View** (`/`)
+1. **Index View** (`/`) - ใช้ Django Template
    - Function: `index(request)`
-   - แสดงข้อความต้อนรับ
+   - ใช้ `render()` แทน `HttpResponse`
+   - ส่ง context data ไปยัง template
+   - Template: `templates/index.html` พร้อม CSS styling
+   - มี navigation links ไปยัง views อื่นๆ
 
 2. **About View** (`/about/`)
    - Function: `about(request)`
@@ -111,6 +117,26 @@ django_test/
    - Function: `month_archive(request, year, month)`
    - แสดงบทความประจำเดือน (2 หลัก)
    - ตัวอย่าง: `/articles/2024/12/`
+
+7. **Maps View** (`/map/`) - ใช้ Query Parameters
+   - Function: `maps(request)`
+   - รับ query parameters: `type`, `lat`, `lon`, `zoom`, `q`
+   - ตัวอย่าง: `/map/?type=satellite&lat=13.7563&lon=100.5018&zoom=15&q=Bangkok`
+   - Default values: type=roadmap, lat=13.7245, lon=100.49.30, zoom=11
+
+## Django Templates
+
+### Template Configuration
+- Templates directory: `templates/`
+- กำหนดใน `settings.py` ใน `TEMPLATES['DIRS']`
+- ใช้ `Path.joinpath(BASE_DIR, "templates")` เพื่อระบุ path
+
+### Template Features ในโปรเจค
+- `index.html` - หน้าหลักพร้อม HTML/CSS styling
+- Context variables: `{{ title }}` และ `{{ content }}`
+- Navigation menu ที่เชื่อมโยงไปยัง views อื่นๆ
+- Responsive design พร้อม CSS styling
+- Demo links สำหรับทดสอบ URL patterns ต่างๆ
 
 ## คำสั่งที่มีประโยชน์
 
@@ -139,6 +165,7 @@ python manage.py collectstatic
 2. รันเซิร์ฟเวอร์: `python manage.py runserver`
 3. เข้าถึงเว็บไซต์ที่ `http://127.0.0.1:8000/`
 4. ทดสอบ URL patterns ต่างๆ ตามที่ระบุในส่วน Features
+5. แก้ไข templates ใน `templates/` directory
 
 ## การจัดการ Git
 
@@ -164,7 +191,7 @@ git push origin master
 
 ### URL Patterns ปกติ
 ```bash
-# ทดสอบหน้าหลัก
+# ทดสอบหน้าหลัก (จะเห็น HTML template)
 curl http://127.0.0.1:8000/
 
 # ทดสอบหน้าเกี่ยวกับ
@@ -186,6 +213,18 @@ curl http://127.0.0.1:8000/articles/2024/
 curl http://127.0.0.1:8000/articles/2024/12/
 ```
 
+### Query Parameters
+```bash
+# ทดสอบหน้าแผนที่ (ไม่มี parameters)
+curl http://127.0.0.1:8000/map/
+
+# ทดสอบหน้าแผนที่พร้อม query parameters
+curl "http://127.0.0.1:8000/map/?type=satellite&lat=13.7563&lon=100.5018&zoom=15&q=Bangkok"
+
+# ทดสอบด้วย partial parameters
+curl "http://127.0.0.1:8000/map/?type=terrain&zoom=12"
+```
+
 ## URL Patterns ที่ใช้ในโปรเจค
 
 ### แบบปกติ (path)
@@ -197,14 +236,31 @@ curl http://127.0.0.1:8000/articles/2024/12/
 - `(?P<year>[0-9]{4})` - capture group ชื่อ year ที่ต้องเป็นตัวเลข 4 หลัก
 - `(?P<month>[0-9]{2})` - capture group ชื่อ month ที่ต้องเป็นตัวเลข 2 หลัก
 
+### แบบ Query Parameters (GET parameters)
+- ใช้สำหรับ optional parameters ใน URL
+- เข้าถึงผ่าน `request.GET.get('parameter_name', 'default_value')`
+- ตัวอย่าง: `?type=satellite&lat=13.7563&lon=100.5018&zoom=15&q=Bangkok`
+- เหมาะสำหรับการกรอง, การค้นหา, หรือการตั้งค่าต่างๆ
+
+### Django Templates
+- ใช้ `render()` function เพื่อส่ง context data ไปยัง template
+- Template files อยู่ใน `templates/` directory
+- สามารถใช้ template variables เช่น `{{ variable_name }}`
+- รองรับ HTML, CSS, และ JavaScript
+
 ## หมายเหตุ
 
 - โปรเจคนี้ใช้สำหรับการทดสอบและเรียนรู้ Django
 - Django version 5.2.6 กับ Python 3.10
 - ฐานข้อมูล SQLite3 (db.sqlite3) ถูกสร้างแล้ว
 - Admin interface ถูก comment ออกในไฟล์ urls.py
-- แสดงการใช้งาน URL patterns ทั้งแบบปกติและ Regex
-- views.py มีคอมเมนต์อธิบายแต่ละประเภทของ URL patterns
+- แสดงการใช้งานใน 4 แนวทางหลัก:
+  - Path patterns (ปกติ)
+  - Regex patterns (ซับซ้อน)
+  - Query parameters (GET parameters)
+  - Django Templates (HTML rendering)
+- views.py ใช้ทั้ง `HttpResponse` และ `render()` เพื่อแสดงความแตกต่าง
+- หน้าหลักใช้ Django template พร้อม navigation menu
 - ตรวจสอบให้แน่ใจว่าได้เปิดใช้งาน conda environment ก่อนรันคำสั่งต่างๆ
 - สำหรับ production ควรมีการตั้งค่าเพิ่มเติมด้านความปลอดภัยและประสิทธิภาพ
 - SECRET_KEY ในไฟล์ settings.py เป็นแบบ development ไม่ควรใช้ใน production

@@ -23,6 +23,7 @@ from django.urls import re_path
 urlpatterns = [
     #path("admin/", admin.site.urls),
     path("", views.index, name="index"),
+    
     path("about/", views.about, name="about"),
 
 
@@ -35,4 +36,10 @@ urlpatterns = [
     re_path(r"^articles/(?P<year>[0-9]{4})/$", views.year_archive, name="year_archive"),
 
     re_path(r"^articles/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/$", views.month_archive, name="month_archive"),
+
+# Query parameters example
+    path("map/", views.maps, name="map"),
+
+# Template example
+
 ]

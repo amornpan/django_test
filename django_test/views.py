@@ -1,6 +1,12 @@
 from django.http import HttpResponse
+from django.shortcuts import render
+
 def index(request):
-    return HttpResponse("Hello, world. You're at the index.")
+    context = {
+        "title": "Welcome to My Django Site",
+        "content": "This is the home page of my awesome Django test project. Explore the different URL patterns and see how Django routing works!",
+    }
+    return render(request, "index.html", context)
 
 def about(request):
     return HttpResponse("This is the about page.")  
@@ -19,3 +25,12 @@ def year_archive(request, year):
 
 def month_archive(request, year, month):
     return HttpResponse(f"Articles from {year}-{int(month):02d}.")
+
+def maps(request):
+    type = request.GET.get("type", "roadmap")
+    lat = request.GET.get("lat", "13.7245")
+    lon = request.GET.get("lon", "100.49.30")   
+    zoom = request.GET.get("zoom", "11") 
+    query = request.GET.get("q", "")
+    return HttpResponse(f"Map type: {type}, Latitude: {lat}, Longitude: {lon}, Zoom: {zoom}, Query: {query}")
+

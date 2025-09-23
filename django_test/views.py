@@ -2,6 +2,12 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from datetime import date as today_date  # เปลี่ยนชื่อเพื่อหลีกเลี่ยง conflict
 
+def tag_for(request):
+    vars = {'range': range(1, 6),   
+            'list': ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry'],
+            'dict': {'name': 'Alice', 'age': 30, 'city': 'New York'}}
+    return render(request, "tag-for.html", vars)
+
 def test(request):
     dt = today_date.today()
 

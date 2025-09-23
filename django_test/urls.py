@@ -22,6 +22,8 @@ from django.urls import re_path
 
 urlpatterns = [
 
+    path("tag/for/", views.tag_for, name="tag_for"),
+
     path("test/", views.test, name="test"),
 
     #path("admin/", admin.site.urls),
